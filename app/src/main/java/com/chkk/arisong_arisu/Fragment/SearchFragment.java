@@ -113,8 +113,8 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback{
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(Location);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.arisu));
-        markerOptions.title("서울");
-        markerOptions.snippet("수도");
+        markerOptions.title("여기에");
+        markerOptions.snippet("아리수가 있다");
         googleMap.addMarker(markerOptions);
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(Location));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
