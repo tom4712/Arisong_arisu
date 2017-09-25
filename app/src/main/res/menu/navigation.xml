@@ -3,17 +3,17 @@
 
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/GoSetting"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="셋팅" />
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/GoHome"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="홈" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/GoSearch"
         android:icon="@drawable/ic_shearch_icon"
         android:title="음수대 찾기" />
 
