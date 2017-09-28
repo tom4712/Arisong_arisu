@@ -4,6 +4,7 @@ package com.chkk.arisong_arisu.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.chkk.arisong_arisu.R;
+import com.chkk.arisong_arisu.locationDTO;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +24,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 
 /**
@@ -29,8 +39,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
  */
 public class SearchFragment extends Fragment implements OnMapReadyCallback{
 
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
     private GoogleMap mMap;
     private MapView mapView = null;
+    private String locatename;
+    private String locatesmallname;
+    private long wedo;
+    private long gyongdo;
+
+    ArrayList<locationDTO> items;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -45,6 +63,8 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_search, container, false);
+
+
 
         mapView = (MapView)layout.findViewById(R.id.map);
         mapView.getMapAsync(this);
@@ -107,17 +127,41 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback{
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public  void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
+
+        databaseReference.child("LocationDB").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        }
+        );
+
+
+
         LatLng Location = new LatLng(37.56, 126.97);
 
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(Location);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.arisu));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
         markerOptions.title("여기에");
         markerOptions.snippet("아리수가 있다");
-        googleMap.addMarker(markerOptions);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(Location));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+        mMap.addMarker(markerOptions);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(Location));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+
+
+
     }
+
 }
+
 
