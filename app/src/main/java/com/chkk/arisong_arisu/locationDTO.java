@@ -6,33 +6,35 @@ package com.chkk.arisong_arisu;
 
 public class locationDTO {
 
-    private long wedo;
-    private long gyoundo;
+    private double wedo;
+    private double gyoundo;
     private String LocationName;
     private String LcatesmallName;
 
     public  locationDTO(){}
 
-    public locationDTO(String LocationName, String LcatesmallName, long gyoundo, long wedo){
-        this.LocationName = LocationName;
-        this.LcatesmallName = LcatesmallName;
+    public locationDTO(String LocationName, String LcatesmallName, double gyoundo, double wedo){
         this.gyoundo = gyoundo;
         this.wedo = wedo;
+        this.LocationName = LocationName;
+        this.LcatesmallName = LcatesmallName;
     }
 
-    public long getWedo() {
+
+
+    public double getWedo() {
         return wedo;
     }
 
-    public void setWedo(long wedo) {
+    public void setWedo(double wedo) {
         this.wedo = wedo;
     }
 
-    public long getGyoundo() {
+    public double getGyoundo() {
         return gyoundo;
     }
 
-    public void setGyoundo(long gyoundo) {
+    public void setGyoundo(double gyoundo) {
         this.gyoundo = gyoundo;
     }
 

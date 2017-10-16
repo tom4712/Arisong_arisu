@@ -39,14 +39,16 @@ import java.util.Map;
  */
 public class SearchFragment extends Fragment implements OnMapReadyCallback{
 
+
+
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private GoogleMap mMap;
     private MapView mapView = null;
-    private String locatename;
-    private String locatesmallname;
-    private long wedo;
-    private long gyongdo;
+    private String Locationname;
+    private String Locationsmallname;
+    private double Latitude;
+    private double Hardness;
 
     ArrayList<locationDTO> items;
 
@@ -132,11 +134,33 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback{
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
 
-        databaseReference.child("LocationDB").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("LotionDB").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
 
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    locationDTO locationDTO =  snapshot.getValue(locationDTO.class);
+                    Log.d("asd","값받아옴");
+                    Latitude = locationDTO.getWedo();
+                    Log.d("asd","값받아옴2");
+                    Hardness = locationDTO.getGyoundo();
+                    Log.d("asd","값받아옴3");
+                    Locationname = locationDTO.getLocationName();
+                    Log.d("asd","값받아옴4");
+                    Locationsmallname = locationDTO.getLcatesmallName();
+
+                    LatLng Location = new LatLng(Latitude, Hardness);
+                    Log.d("asd","경도 설정함"+Latitude+" / "+Hardness);
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(Location);
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+                    markerOptions.title(Locationname);
+                    markerOptions.snippet(Locationsmallname);
+                    mMap.addMarker(markerOptions);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(Location));
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -147,16 +171,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback{
 
 
 
-        LatLng Location = new LatLng(37.56, 126.97);
 
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(Location);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-        markerOptions.title("여기에");
-        markerOptions.snippet("아리수가 있다");
-        mMap.addMarker(markerOptions);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(Location));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
 
 
