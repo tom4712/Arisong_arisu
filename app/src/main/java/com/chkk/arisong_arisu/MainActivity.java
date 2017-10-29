@@ -13,9 +13,10 @@ import com.chkk.arisong_arisu.Fragment.HomeFragment;
 import com.chkk.arisong_arisu.Fragment.SearchFragment;
 import com.chkk.arisong_arisu.Fragment.SettingFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
     int pressTime;
     boolean chkboolean = false;
+    private GPSInfo gpsInfo;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -42,9 +43,11 @@ public class MainActivity extends AppCompatActivity {
                     SearchFragment fragment3 = new SearchFragment();
                     FragmentTransaction fragmentTransactions3 = getSupportFragmentManager().beginTransaction();
 
+
 //                    Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
                     showProgressDialog("아리수를 찾는 중입니다.");
                     fragmentTransactions3.replace(R.id.frame_layout, fragment3);
+
                     fragmentTransactions3.commit();
                     return true;
             }
@@ -67,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransactions1 = getSupportFragmentManager().beginTransaction();
         fragmentTransactions1.replace(R.id.frame_layout, fragment1);
         fragmentTransactions1.commit();
+        gpsInfo = new GPSInfo(this);
+        gpsInfo.checkPermission();
     }
     public ProgressDialog progressDialog;
 

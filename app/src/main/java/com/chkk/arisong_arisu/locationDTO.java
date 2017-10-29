@@ -6,6 +6,7 @@ package com.chkk.arisong_arisu;
 
 public class locationDTO {
 
+    private int Number;
     private double wedo;
     private double gyoundo;
     private String LocationName;
@@ -13,14 +14,21 @@ public class locationDTO {
 
     public  locationDTO(){}
 
-    public locationDTO(String LocationName, String LcatesmallName, double gyoundo, double wedo){
+    public locationDTO(String LocationName, String LcatesmallName, double gyoundo, double wedo, int number){
+        this.Number = number;
         this.gyoundo = gyoundo;
         this.wedo = wedo;
         this.LocationName = LocationName;
         this.LcatesmallName = LcatesmallName;
     }
 
+    public int getNumber() {
+        return Number;
+    }
 
+    public void setNumber(int number) {
+        Number = number;
+    }
 
     public double getWedo() {
         return wedo;
