@@ -66,6 +66,8 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
     private double Latitude = 0,Longitude = 0;
     private LatLng Position;
 
+
+
     ArrayList<locationDTO> items;
 
     public SearchFragment() {
@@ -75,7 +77,62 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
+
+
+
+        databaseReference.child("LocationDB").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int a = 0;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    locationDTO locationDTO =  snapshot.getValue(locationDTO.class);
+                    Log.d("asd","값받아옴");
+                    Latitude = locationDTO.getWedo();
+                    Log.d("asd","값받아옴2");
+                    Hardness = locationDTO.getGyoundo();
+                    Log.d("asd","값받아옴3");
+                    Locationname = locationDTO.getLocationName();
+                    Log.d("asd","값받아옴4");
+                    Locationsmallname = locationDTO.getLcatesmallName();
+                    LatLng Location = new LatLng(Latitude, Hardness);
+                    Log.d("asd","경도 설정함"+Latitude+" / "+Hardness+"\t "+a+"번째임");
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(Location);
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+                    markerOptions.title(Locationname);
+                    markerOptions.snippet(Locationsmallname);
+
+                    mMap.addMarker(markerOptions);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Location,15));
+                    //   mMap
+                    mMap.setOnInfoWindowClickListener(infoWindowClickListener);
+                    mMap.setOnMarkerClickListener(markerClickListener);
+                    a++;
+                }
+            }
+            @Override public void onCancelled(DatabaseError databaseError) {
+                Log.i("SDSDSDSSDSDSDSDS","SDSDSDSDSDSDSDSDSDS");
+            }
+        }
+
+        );
+
+        gpsInfo = new GPSInfo(getActivity().getApplicationContext());
+        gpsInfo.getLocation();
+        Log.d("asd123","위치받아옴");
+        getLongitude();
+        Log.d("asd123","경도");
+        getLatitude();
+        Log.d("asd123","위도");
+        setPosition();
+        Log.d("asd123","사용자 마커 찍음");
+
         super.onCreate(savedInstanceState);
+
     }
     @Nullable
     @Override
@@ -85,11 +142,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         mapView = (MapView) layout.findViewById(R.id.googlemap);
         mapView.getMapAsync(this);
 
-        gpsInfo = new GPSInfo(getActivity().getApplicationContext());
-        gpsInfo.getLocation();
-        getLongitude();
-        getLatitude();
-        setPosition();
+
 
         linearlayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,7 +207,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         {
             mapView.onCreate(savedInstanceState);
             MainActivity mia  = new MainActivity();
-            mia.ProgaressDialogoff();
+//            mia.ProgaressDialogoff();
         }
     }
 
@@ -170,7 +223,11 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
             //  Log.i("tlqkf","종하1~~");
             // Log.i("SDS",isFirst+"");
             myLocation = new MarkerOptions();
+
+
+
             myLocation.position(Position);
+
             return ;
         }
         if(isFirst){
@@ -183,6 +240,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         myLocation.position(Position);
         nowLocation = myLocation;
         this.mMap.addMarker(nowLocation.title("내 위치")).showInfoWindow();
+        myLocation.icon(BitmapDescriptorFactory.fromResource(R.drawable.usermaker));
         nowLocation.visible(false);
     }
 
@@ -190,51 +248,8 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public  void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
-        getLongitude();
-        getLatitude();
-        setPosition();
         mapView.getMapAsync(this);
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference();
 
-        databaseReference.child("LocationDB").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-
-                    locationDTO locationDTO =  snapshot.getValue(locationDTO.class);
-                    Log.d("asd","값받아옴");
-                    Latitude = locationDTO.getWedo();
-                    Log.d("asd","값받아옴2");
-                    Hardness = locationDTO.getGyoundo();
-                    Log.d("asd","값받아옴3");
-                    Locationname = locationDTO.getLocationName();
-                    Log.d("asd","값받아옴4");
-                    Locationsmallname = locationDTO.getLcatesmallName();
-                    LatLng Location = new LatLng(Latitude, Hardness);
-                    Log.d("asd","경도 설정함"+Latitude+" / "+Hardness);
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(Location);
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-                    markerOptions.title(Locationname);
-                    markerOptions.snippet(Locationsmallname);
-
-                    mMap.addMarker(markerOptions);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Location,15));
-                 //   mMap
-                    mMap.setOnInfoWindowClickListener(infoWindowClickListener);
-                    mMap.setOnMarkerClickListener(markerClickListener);
-                }
-
-            }
-            @Override public void onCancelled(DatabaseError databaseError) {
-                Log.i("SDSDSDSSDSDSDSDS","SDSDSDSDSDSDSDSDSDS");
-            }
-        }
-
-        );
     }
 
 
@@ -251,10 +266,10 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
     GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker) {
-            String markerId = String.valueOf(Integer.parseInt(marker.getId())+1);
+            String markerId =  String.valueOf(marker.getId()); //String.valueOf(Integer.parseInt(marker.getId()));
             //선택한 타겟위치
             LatLng location = marker.getPosition();
-            Toast.makeText(getContext(), "마커 클릭 Marker ID : "+markerId+"("+location.latitude+" "+location.longitude+")", Toast.LENGTH_SHORT).show();
+           Toast.makeText(getContext(), "마커 클릭 Marker ID : "+markerId+"("+location.latitude+" "+location.longitude+")", Toast.LENGTH_SHORT).show();
             linearlayout.setVisibility(View.VISIBLE);
 
             return false;

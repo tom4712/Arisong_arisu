@@ -30,6 +30,7 @@ public class GPSInfo extends Service implements LocationListener {
     private static final int MIN_TIME_BW_UPDATES = 500;
 
     Location location;
+    int a = 0;
     double lat;
     double lon;
     double[] position = new double[2];
@@ -147,6 +148,8 @@ public class GPSInfo extends Service implements LocationListener {
         position[1] = lon;
         SearchFragment maps = new SearchFragment();
         maps.setPosition();
+        a++;
+        Log.d("asd123", a+"번쨰 부름");
         Log.i("tlqkf", "종하~~");
         Log.d("GPS", "Location 바뀜, Lat :" + lat + ", Lon : " + lon);
     }
